@@ -1,0 +1,192 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>《你不知道的JS上卷》阅读小记之匿名函数问题 | DaraW | Code is Poetry</title>
+
+  
+  <meta name="author" content="DaraW">
+  
+
+  
+  <meta name="description" content="JavaScript Developer">
+  
+
+  
+  
+  <meta name="keywords" content="JavaScript">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="《你不知道的JS上卷》阅读小记之匿名函数问题"/>
+
+  <meta property="og:site_name" content="DaraW"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="DaraW" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">DaraW</a>
+    </h1>
+    <p class="site-description">Code is Poetry</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>《你不知道的JS上卷》阅读小记之匿名函数问题</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/02/20/notes-about-you-dont-know-js-anonymous-function/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-02-20T19:48:52.000Z">
+          2017-02-20
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="匿名函数的问题"><a href="#匿名函数的问题" class="headerlink" title="匿名函数的问题"></a>匿名函数的问题</h2><p>在第一部分<code>3.3.1匿名与具名</code>一节中，作者提到了匿名函数的三个缺点并给了一个最佳实践，三个缺点分别是调试时栈追踪看不到有意义的函数名带来麻烦，引用自身时只能使用过期的<code>arguments.callee</code>并举了两个例子回调和事件监听器触发后解绑自身，代码可读性；最佳实践是说始终传入具名函数，给函数表达式一个函数名。  </p>
+<a id="more"></a>
+<p>关于缺点三和最佳实践我觉得没什么问题；缺点一只要不是变态的多层嵌套，debug工具的栈追踪还是能比较清楚的理解的；问题出在了缺点二：<br>Talk is cheap, 直接上代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> y = <span class="function"><span class="params">g</span> =&gt;</span></span><br><span class="line">    (<span class="function"><span class="params">f</span>=&gt;</span>f(f))(</span><br><span class="line">        self =&gt;</span><br><span class="line">            g( <span class="function">(<span class="params">...args</span>)=&gt;</span>self(self)(...args) )</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> f = y(<span class="function"><span class="params">self</span> =&gt;</span></span><br><span class="line">    n =&gt; n &lt; <span class="number">0</span> ? <span class="number">0</span> : n + self(n<span class="number">-1</span>))</span><br><span class="line"></span><br><span class="line">f(<span class="number">100</span>); <span class="comment">// 5050</span></span><br></pre></td></tr></table></figure>
+<p>这段代码来自Winter的Gist(<a href="https://gist.github.com/wintercn/7d06dd226d699c832b6a" target="_blank" rel="noopener">ycombinator in es2015<br>Raw
+</a>)，y函数有一个名字叫做Y Combinator。是不是有种黑魔法的感觉？  </p>
+<p>关于Y组合子网上已经有一大堆科普文，如果对于它的推导过程感兴趣可以参考<a href="http://blog.csdn.net/voidccc/article/details/39143733" target="_blank" rel="noopener">Javascript推导Y-Combinator</a>。Y组合子的的精髓就是在于函数不动点：<code>g(f) = f</code>，高阶函数<code>g</code>传入一个函数<code>f</code>还会得到<code>f</code>。  </p>
+<p>Y组合子是Lambda演算的一部分，也是函数式编程的理论基础，在没有赋值语句的前提下定义递归的匿名函数。在实际开发中其实并没有太大用处，敢在业务代码里写上面的YC的估计都被打死了吧hhhhh，实际开发中还是建议遵循书中的建议比较好一点。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://zh.wikipedia.org/wiki/%E4%B8%8D%E5%8A%A8%E7%82%B9%E7%BB%84%E5%90%88%E5%AD%90" target="_blank" rel="noopener">不动点组合子 - 维基百科，自由的百科全书</a></li>
+<li><a href="http://codedocker.com/anonymous-function-recursion-in-javascript/" target="_blank" rel="noopener">Javascript中匿名函数的递归调用</a></li>
+<li><a href="http://blog.csdn.net/voidccc/article/details/39143733" target="_blank" rel="noopener">Javascript推导Y-Combinator</a></li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+      
+
+    <span class="post-categories">
+      <i class="icon-categories"></i>
+        <a href="/categories/JavaScript/">JavaScript</a>
+    </span>
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/JavaScript/">JavaScript</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+	<section id="comments" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'daraw';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 DaraW
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-75095706-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

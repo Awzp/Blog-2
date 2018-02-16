@@ -1,0 +1,201 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>模仿百度新闻列表底部的“加载更多” | DaraW | Code is Poetry</title>
+
+  
+  <meta name="author" content="DaraW">
+  
+
+  
+  <meta name="description" content="JavaScript Developer">
+  
+
+  
+  
+  <meta name="keywords" content="ajax,js,json,jQuery">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="模仿百度新闻列表底部的“加载更多”"/>
+
+  <meta property="og:site_name" content="DaraW"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="DaraW" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">DaraW</a>
+    </h1>
+    <p class="site-description">Code is Poetry</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>模仿百度新闻列表底部的“加载更多”</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2015/10/11/add-the-function-load-more/" rel="bookmark">
+        <time class="entry-date published" datetime="2015-10-11T00:00:00.000Z">
+          2015-10-11
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>&emsp;&emsp;自从上个月来到了学校的信息化中心实习后自由安排的时间越来越少，遂好久没来更新博客了。<br>&emsp;&emsp;昨天在完成一个模仿手机端百度新闻列表底“点击加载更多”的功能时，由于第一次写ajax与后端交互，遇到了几个坑，现在逐一来分享。<br><a id="more"></a></p>
+<h2 id="详情"><a href="#详情" class="headerlink" title="详情"></a>详情</h2><ol>
+<li><p>后端提供给我的一个用json传递内容的接口，接口地址类似于</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://xxxxxxxxx&amp;category=xx&amp;count=xx</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;category代表新闻的类型，一共有三种，不同的类型对应的列表不同，而count代表当前的页面上已有的新闻条数。<br>&emsp;&emsp;在与写后端的老师的交流中，得知了老师在新闻列表界面是通过将类型放入url来实现的，一共三种url，于是他的三种新闻的列表地址就是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://xxxxxxxx/getlist/x</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;最后一个字符（1/2/3）代表类型。于是我想到了一个奇巧淫技，通过BOM获取当前的浏览器的url，然后正则获取url的最后一位，于是解决了分类的问题。<br>&emsp;&emsp; 当前页面的新闻的形式是一个无序列表，于是通过DOM获取无序列表里的<code>li</code>元素，得到的是一个数组，该数组的长度就是现在页面上的新闻的条数。  </p>
+</li>
+<li><p>接下来的坑是ajax，jQuery将ajax封装了一遍，又将用json交互的ajax封装了一遍，即getJSON，感觉查到的手册里关于这一方法讲的并不是很好，于是在博客园中找到了这篇文章<a href="http://www.cnblogs.com/jams742003/archive/2009/12/25/1632276.html" target="_blank" rel="noopener">Jquery getJSON方法分析（一） - 梅桦 - 博客园</a>，看完以后豁然开朗。<br>&emsp;&emsp;我这次的案例中后端的json格式是这样的，</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[&#123;<span class="attr">"url"</span>:<span class="string">"url1"</span>,<span class="attr">"title"</span>:<span class="string">"title1"</span>,<span class="attr">"pub_date"</span>:<span class="string">"1"</span>&#125;,&#123;<span class="attr">"url"</span>:<span class="string">"url2"</span>,<span class="attr">"title"</span>:<span class="string">"title2"</span>,<span class="attr">"pub_date"</span>:<span class="string">"2"</span>&#125;]</span><br></pre></td></tr></table></figure>
+<p>于是我的核心部分代码如下：  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">$.getJSON(<span class="string">"http://xxxxxxx/getmorenews?category="</span> + category + <span class="string">"&amp;count="</span> + count,</span><br><span class="line"><span class="function"><span class="keyword">function</span>(<span class="params">news</span>) </span>&#123;  </span><br><span class="line"><span class="keyword">if</span> (news == <span class="string">""</span>) &#123; <span class="comment">//判断是否有内容  </span></span><br><span class="line">        $(<span class="string">".ui-refresh"</span>).html(<span class="string">'已无更多'</span>);<span class="comment">//提示没内容  </span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;  </span><br><span class="line">$.each(news, <span class="function"><span class="keyword">function</span>(<span class="params">k, v</span>) </span>&#123;  </span><br><span class="line">        <span class="keyword">var</span> addHtml = <span class="string">""</span>; <span class="comment">//每个循环都单独来一遍  </span></span><br><span class="line">        $.each(v, <span class="function"><span class="keyword">function</span>(<span class="params">kk, vv</span>) </span>&#123;  </span><br><span class="line">                        <span class="keyword">switch</span> (kk) &#123;  </span><br><span class="line">                        <span class="keyword">case</span> <span class="string">"url"</span>: addHtml += <span class="string">'&amp;lt;li class="am-g am-list-item-dated"&amp;gt;&amp;lt;a href="'</span> + vv +<span class="string">'" class="am-list-item-hd "&amp;gt;'</span>;<span class="keyword">break</span>;  </span><br><span class="line">                        <span class="keyword">case</span> <span class="string">"title"</span>: addHtml += vv +<span class="string">'&amp;lt;/a&amp;gt;&amp;lt;span class="am-list-date"&amp;gt;'</span>;<span class="keyword">break</span>;  </span><br><span class="line">                        <span class="keyword">case</span> <span class="string">"pub_date"</span>: addHtml += vv + <span class="string">'&amp;lt;/span&amp;gt;&amp;lt;/li&amp;gt;'</span>;<span class="keyword">break</span>;  </span><br><span class="line">                        &#125;  </span><br><span class="line">                &#125;);  </span><br><span class="line">        $(<span class="string">".am-list"</span>).append(addHtml);  </span><br><span class="line">        $(<span class="string">".ui-refresh"</span>).html(<span class="string">'点击加载更多'</span>); <span class="comment">//按钮提示还没结束呢  </span></span><br><span class="line">&#125;);  </span><br><span class="line">&#125;<span class="comment">//判断部分end  </span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在chrome里调试时，还遇到了一个问题，ajax跨域请求被chrome拦截，在xss钩子遍地都是的网上，禁止ajax跨域确实能大幅提高安全，当然在开发和调试时会带来一些小问题。chrome报错信息如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">XMLHttpRequest cannot load http://xxxxxxxx/getmorenews?category=2&amp;count=15.</span><br><span class="line">No &apos;Access-Control-Allow-Origin&apos; header is present on the requested resource.</span><br><span class="line">Origin &apos;null&apos; is therefore not allowed access.</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>解决方案也很简单，修改chrome的快捷方式的属性中的目标，假设原来是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;C:\Program Files (x86)\Google\Chrome\Application\chrome.exe&quot;</span><br></pre></td></tr></table></figure></p>
+<p>在后面添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">--disable-web-security</span><br></pre></td></tr></table></figure></p>
+<p>添加后是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;C:\Program Files (x86)\Google\Chrome\Application\chrome.exe&quot; --disable-web-security</span><br></pre></td></tr></table></figure></p>
+<p>注意空格。然后重启chrome，chrome提醒命令行标记不受支持，安全性会下降就成功了。建议平时不要使用这个快加方式启动chrome，会降低chrome防止xss攻击的能力。  </p>
+<h2 id="尾声"><a href="#尾声" class="headerlink" title="尾声"></a>尾声</h2><p>&emsp;&emsp;唔，你可能已经发现了，我用了amaze ui，一个类似bootstrap的框架。在对bootstrap审美疲劳后，发现了amaze ui，还是挺喜欢它的ui的，等段时间来用amaze ui 做一个hexo的主题。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+      
+
+    <span class="post-categories">
+      <i class="icon-categories"></i>
+        <a href="/categories/前端/">前端</a>
+    </span>
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/ajax/">ajax</a><a href="/tags/js/">js</a><a href="/tags/json/">json</a><a href="/tags/jQuery/">jQuery</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+	<section id="comments" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'daraw';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 DaraW
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-75095706-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

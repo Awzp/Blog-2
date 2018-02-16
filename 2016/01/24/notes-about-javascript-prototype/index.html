@@ -1,0 +1,215 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>JavaScript原型学习笔记 | DaraW | Code is Poetry</title>
+
+  
+  <meta name="author" content="DaraW">
+  
+
+  
+  <meta name="description" content="JavaScript Developer">
+  
+
+  
+  
+  <meta name="keywords" content="JavaScript,prototype">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="JavaScript原型学习笔记"/>
+
+  <meta property="og:site_name" content="DaraW"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="DaraW" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">DaraW</a>
+    </h1>
+    <p class="site-description">Code is Poetry</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>JavaScript原型学习笔记</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2016/01/24/notes-about-javascript-prototype/" rel="bookmark">
+        <time class="entry-date published" datetime="2016-01-24T17:30:05.000Z">
+          2016-01-24
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>对JS的原型一直不是很懂，虽然不少情况下也能似懂非懂的看懂和写出来，然而彻底理解原型对于学习JS是很有必要的。<br><a id="more"></a></p>
+<p>在阅读<a href="http://blog.jobbole.com/9648/" target="_blank" rel="noopener">理解JavaScript原型 - 博客 - 伯乐在线</a>这篇博文时，遇到了两个小问题，经过一阵思考才理解过来。  </p>
+<h2 id="问题1"><a href="#问题1" class="headerlink" title="问题1"></a>问题1</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> A = <span class="function"><span class="keyword">function</span>(<span class="params">name</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.name = name;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> a = <span class="keyword">new</span> A(<span class="string">'alpha'</span>);</span><br><span class="line">a.name; <span class="comment">//'alpha'</span></span><br><span class="line"></span><br><span class="line">A.__proto__.max = <span class="number">123</span>;</span><br><span class="line"></span><br><span class="line">a.max   <span class="comment">//undefined</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var A = function(name)&#123;</span><br><span class="line">    this.name = name;</span><br><span class="line">&#125;</span><br><span class="line">var a = new A(&apos;alpha&apos;);</span><br><span class="line">a.name; //&apos;alpha&apos;</span><br><span class="line"></span><br><span class="line">a.__proto__.max = 123;</span><br><span class="line"></span><br><span class="line">a.max   //123</span><br></pre></td></tr></table></figure>
+<p>在我原来的想法中，若上面的调用<code>a.max</code>时会向上查找原型链，而A是a的constructor，所以第二段代码能正常运行，a能取到max的值，那为什么<code>A.__proto__</code>修改后却<code>a.max</code>却是未定义呢？  </p>
+<p>在经过一番查找资料，使用<code>isPrototypeOf</code>方法测试一个对象是否在另一个对象的原型链上，于是对于第一段代码,在命令行里输入：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">A.prototype.isPrototypeOf(a)  <span class="comment">// true</span></span><br><span class="line">A.__proto__.isPrototypeOf(a)  <span class="comment">// false</span></span><br><span class="line">a.__proto__.isPrototypeOf(a)  <span class="comment">// true</span></span><br></pre></td></tr></table></figure></p>
+<p>很明显，第二段代码<code>a.max</code>为<code>123</code>是从<code>A.prototype</code>上获取的，而<code>A.constructor</code>并不在<code>a</code>的原型链上，故第一段代码<code>a.max</code>为未定义。  </p>
+<p>然后我又好奇了，<code>A.constructor</code>不在<code>a</code>的原型链上那么它在谁的原型链上呢？  </p>
+<p>我的疑惑被小秦一句话点破：  </p>
+<blockquote>
+<p>因为a是一个对象,而不是一个function</p>
+</blockquote>
+<p>看下面一段代码:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> A = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;&#125;;</span><br><span class="line"><span class="keyword">var</span> a = <span class="keyword">new</span> A();</span><br><span class="line"><span class="keyword">var</span> b = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;&#125;;</span><br><span class="line">A.__proto__.max = <span class="number">123</span>;</span><br><span class="line">a.max <span class="comment">// undefined</span></span><br><span class="line">b.max <span class="comment">// 123</span></span><br><span class="line">a.constructor === A <span class="comment">// true</span></span><br><span class="line">a.constructor === <span class="built_in">Function</span>  <span class="comment">// false</span></span><br><span class="line">b.constructor === <span class="built_in">Function</span>  <span class="comment">// true</span></span><br><span class="line">A.constructor === <span class="built_in">Function</span>  <span class="comment">// true</span></span><br></pre></td></tr></table></figure></p>
+<p>由上可以看出，<code>A.__proto__</code>指向了<code>Function.prototype</code>，所以<code>A.constructor</code>在所有<code>Function</code>的实例对象（例如<code>b</code>）的原型链上，<code>console.dir(Function.prototype)</code>可以看到<code>Function.prototype</code>其中有<code>max:123</code>。  </p>
+<h2 id="问题2"><a href="#问题2" class="headerlink" title="问题2"></a>问题2</h2><p>在看到文中的这段代码：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123;&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//Firefox 3.6 and Chrome 5</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.getPrototypeOf(a);</span><br><span class="line"><span class="comment">//[object Object]   </span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//Firefox 3.6, Chrome 5 and Safari 4</span></span><br><span class="line"></span><br><span class="line">a.__proto__;</span><br><span class="line"><span class="comment">//[object Object]   </span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//all browsers</span></span><br><span class="line"></span><br><span class="line">a.constructor.prototype;</span><br><span class="line"><span class="comment">//[object Object]</span></span><br></pre></td></tr></table></figure></p>
+<p>我下意识的认为<code>a.__proto__</code>和<code>a.constructor.prototype</code>是同一个玩意儿，接着在调试台的命令行里测试了一下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a.__proto__ === a.constructor.prototype <span class="comment">// true</span></span><br></pre></td></tr></table></figure></p>
+<p>哎呀，好像还真是的。然后分分钟被打脸：<br>这是原文中的代码：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//unusual case and does not work in IE</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> a = &#123;&#125;;</span><br><span class="line">a.__proto__ = <span class="built_in">Array</span>.prototype;</span><br><span class="line">a.length;   <span class="comment">//0</span></span><br></pre></td></tr></table></figure></p>
+<p>于是我想，把<code>a.__proto__</code>换成<code>a.constructor.prototype</code>应该也能正常吧？于是在控制台里试了下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//unusual case and does not work in IE</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> a = &#123;&#125;;</span><br><span class="line">a.constructor.prototype = <span class="built_in">Array</span>.prototype;</span><br><span class="line">a.length;   <span class="comment">// undefined</span></span><br></pre></td></tr></table></figure></p>
+<p>咦？为啥是未定义？说好的一样的呢？<br>仔细分析，<code>a.constructor.prototype</code>就是<code>Object.prototype</code>，貌似记得这玩意儿是只读的啊，查了下MDN的文档<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/prototype" target="_blank" rel="noopener">Object.prototype - JavaScript | MDN</a>，果然是只读的。  </p>
+<p><strong> 那么问题来了，为什么上面的代码用<code>a.__proto__</code>可以正常呢？ </strong>   </p>
+<p>在Stack Overflow上，搜到一个一样的问题，<a href="http://stackoverflow.com/questions/650764/how-does-proto-differ-from-constructor-prototype" target="_blank" rel="noopener"><code>javascript - How does __proto__ differ from constructor.prototype? - Stack Overflow</code></a>，其中一个答案让我似懂非懂的明白了：</p>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">The Prototypal Inheritance in JavaScript is based on __proto__ property in a sense that each object is inheriting the contents of the object referenced by its __proto__ property.  </span><br><span class="line">The prototype property is special only for Function objects and only when using new operator to call a Function as constructor. In this case, the created object&apos;s __proto__ will be set to constructor&apos;s Function.prototype.  </span><br><span class="line">This means that adding to Function.prototype will automatically reflect on all objects whose __proto__ is referencing the Function.prototype.  </span><br><span class="line">Replacing constructor&apos;s Function.prototype with another object will not update __proto__ property for any of the already existing objects.  </span><br><span class="line">Note that __proto__ property should not be accessed directly, Object.getPrototypeOf(object) should be used instead.</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>又查了一下MDN的文档，<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/proto" target="_blank" rel="noopener"><code>Object.prototype.__proto__ - JavaScript | MDN</code></a> ：  </p>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">一个对象的__proto__ 属性和自己的内部属性[[Prototype]]指向一个相同的值 (通常称这个值为原型),原型的值可以是一个对象值也可以是null(比如说Object.prototype.__proto__的值就是null).该属性可能会引发一些错误,因为用户可能会不知道该属性的特殊性,而给它赋值,从而改变了这个对象的原型.</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>也就是说，<code>a.__proto__ = Array.prototype</code>改变了<code>a.__proto__</code>的指向，将其指向了<code>Array.prototype</code>，故<code>a</code>拥有了原型链上的方法<code>length</code>。<br>而<code>a.__proto__</code>和<code>a.constructor.prototype</code>并非同一个东西，在做比较时相同是因为<code>a.__proto__</code>指向了<code>Object.prototype</code>。</p>
+<p>经过这么一番折腾和总结，对JS的原型有了一个比以前清晰很多的认识，果然有问题时不止要多搜索，还要多查查文档啊！概念或者定义方面的问题，文档比很多人描述的要清晰很多。  </p>
+<p><strong> 参考资料 </strong>  </p>
+<ul>
+<li><a href="http://blog.jobbole.com/9648/" target="_blank" rel="noopener">理解JavaScript原型 - 博客 - 伯乐在线</a>  </li>
+<li><a href="http://segmentfault.com/a/1190000000400182" target="_blank" rel="noopener">理解 JavaScript（四） - 太极客（Very Geek） - SegmentFault</a></li>
+<li><a href="http://www.jb51.net/article/30750.htm" target="_blank" rel="noopener">js原型链原理看图说明 javascript技巧 脚本之家</a></li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+      
+
+    <span class="post-categories">
+      <i class="icon-categories"></i>
+        <a href="/categories/前端/">前端</a>
+    </span>
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/JavaScript/">JavaScript</a><a href="/tags/prototype/">prototype</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+	<section id="comments" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'daraw';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 DaraW
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-75095706-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

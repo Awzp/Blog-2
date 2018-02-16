@@ -1,0 +1,185 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Vue响应式原理之Watcher | DaraW | Code is Poetry</title>
+
+  
+  <meta name="author" content="DaraW">
+  
+
+  
+  <meta name="description" content="JavaScript Developer">
+  
+
+  
+  
+  <meta name="keywords" content="Vue,Watcher">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="Vue响应式原理之Watcher"/>
+
+  <meta property="og:site_name" content="DaraW"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="DaraW" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">DaraW</a>
+    </h1>
+    <p class="site-description">Code is Poetry</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>Vue响应式原理之Watcher</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/03/17/vue-watcher/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-03-17T22:59:15.000Z">
+          2017-03-17
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>最近在看Vue的响应式原理时明白了Vue的一些具体的优化手段，在一个数据被操作2次的时候DOM并不会一定跟着修改2次，正常情况下只有一次的修改。<br>首先Vue响应式原理的大概内容是借助<code>getter</code>和<code>setter</code>来劫持数据的变动的，之前我也曾经写过一篇文章来分析数据绑定的几种实现（<a href="https://blog.daraw.cn/2016/08/17/how-to-monitor-changes-of-js-variable/">如何监听JS变量的变化</a>），但是最近稍微深入了解了Vue的实现原理后发现Vue其实是要比想象中实现的巧妙多了。<br><a id="more"></a><br>在阅读<a href="https://juejin.im/entry/5834992667f356006c395b31" target="_blank" rel="noopener">Vue 源码解析：深入响应式原理</a>的时候，明白了Vue在<code>getter</code>中收集变量的依赖，在<code>setter</code>中通知变量的变化。Vue的内部并不是简单粗暴的把监测钩子插在<code>setter</code>和<code>getter</code>中，而是巧妙的使用了观察者模式（Pub/Sub）,<code>Dep</code>就是其实现。而模版中的指令和数值检测的绑定则通过<code>Watcher</code>来完成，每个被监测的变量会被分配一个<code>Watcher</code>，每个<code>Watcher</code>都有一个<code>id</code>来做去重。<br>在被检测的数值发生变化时，<code>setter</code>中通过<code>dep.notify</code>来发布通知，通知所有的<code>Watcher</code>实例调用<code>update</code>方法，而在大多数情况下，<code>Watcher</code>实例调用<code>update</code>又会把自身放入一个队列中，在下一次事件循环中执行<code>flushSchedulerQueue</code>来一起更新。这一块是用自定义的<code>nextTick</code>函数来做的，这个函数的实现已经有很多的文章进行的讲解，知乎上也有过讨论，这里不再赘述。<br>这个时候我产生了一个很智障的想法，既然每个被监测的变量对应了一个<code>Watcher</code>实例，那么假设<code>vm</code>上有一个值<code>x</code>，初始值为<code>1</code>，<code>vm.x++</code>连续同步执行两次，第一次执行的时候其<code>Watcher</code>实例被推入了更新队列中，第二次的时候在<code>queueWatcher</code>中是有一个<code>has</code>对象当作<code>Map</code>来使用，判断是否已经存在<code>id</code>对应的对象来决定要不要推入队列的，<code>vm.x</code>的<code>Watcher</code>已经被推入过一次，是不会再次被推入的，那么第二次变动是不是会被直接忽略？直觉告诉我<code>Vue</code>肯定不会犯这种低级错误啊！然而这块的代码其实还是有点绕的，虽然读懂了大概的流程，但是有的细节处理不是一时半会儿就能直接理解的。<br>晚上刷知乎的时候看到了一个高赞回答，讲的是如何使用Chrome的断点调试功能查看<code>React</code>的<code>this.setState</code>背后发生了什么，我突然想到既然自己看代码不能理解，那么打断点跑一下不就好了！<br>在Chrome中打断点跑了一遍后我突然想明白过来了，事实上<code>vm</code>上的变量和<code>DOM</code>上的展示并不是完全实时映射的啊，在<code>vm.x++</code>第一次执行后<code>vm.x</code>就已经被认为是脏的了，下一次清空<code>watcher</code>队列的时候他肯定是会进行处理的的，而这个时候，<code>vm.x</code>的值已经是<code>2</code>了；在执行完第二次的自增操作后，<code>vm.x</code>的值变成了<code>3</code>，这时候如果主线程中没有其他的操作（这一轮<code>EventLoop</code>的<code>Macrotask</code>队列已经清空了），就会去清空<code>Watcher</code>实例队列，而这时候<code>DOM</code>才会更新到<code>vm.x</code>的值所对应的样子。  </p>
+<h3 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h3><p>上面的解释是基于<code>Vue2.2.1</code>来分析的，的这里再做一个大胆的猜测，不过我还没有去看源码来验证，<code>Vue2</code>在加入虚拟DOM后，除了能够让Weex和SSR这些多端渲染的实现变得更加容易外，其实也是能够有一定的优化的，假设<code>vm.x++</code>后紧跟一个<code>vm.x--</code>，<code>x</code>虽然是脏的了，但是<code>x</code>并没有发生什么变动，那么可以在V DOM在Diff的时候会把<code>x</code>对应的依赖的DOM修改忽略掉，兼具了依赖收集和虚拟DOM的优点，当然也会付出依赖收集和虚拟DOM的内存占用和计算的成本。</p>
+<h3 id="参考资料-amp-推荐阅读"><a href="#参考资料-amp-推荐阅读" class="headerlink" title="参考资料&amp;推荐阅读"></a>参考资料&amp;推荐阅读</h3><ul>
+<li><a href="https://juejin.im/entry/5834992667f356006c395b31" target="_blank" rel="noopener">Vue 源码解析：深入响应式原理</a></li>
+<li><a href="https://www.zhihu.com/question/55364497" target="_blank" rel="noopener">Vue 中如何使用 MutationObserver 做批量处理？</a></li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+      
+
+    <span class="post-categories">
+      <i class="icon-categories"></i>
+        <a href="/categories/前端/">前端</a>, <a href="/categories/前端/Vue/">Vue</a>
+    </span>
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Vue/">Vue</a><a href="/tags/Watcher/">Watcher</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+	<section id="comments" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'daraw';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 DaraW
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-75095706-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>
