@@ -265,142 +265,6 @@
 
   
     
-    <h3 class="article-title"><a href="/2017/03/17/vue-watcher/"><span>Vue响应式原理之Watcher</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2017/03/17/vue-watcher/" rel="bookmark">
-        <time class="entry-date published" datetime="2017-03-17T22:59:15.000Z">
-          2017-03-17
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <p>最近在看Vue的响应式原理时明白了Vue的一些具体的优化手段，在一个数据被操作2次的时候DOM并不会一定跟着修改2次，正常情况下只有一次的修改。<br>首先Vue响应式原理的大概内容是借助<code>getter</code>和<code>setter</code>来劫持数据的变动的，之前我也曾经写过一篇文章来分析数据绑定的几种实现（<a href="https://blog.daraw.cn/2016/08/17/how-to-monitor-changes-of-js-variable/">如何监听JS变量的变化</a>），但是最近稍微深入了解了Vue的实现原理后发现Vue其实是要比想象中实现的巧妙多了。<br>
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-      
-
-    <span class="post-categories">
-      <i class="icon-categories"></i>
-        <a href="/categories/前端/">前端</a>, <a href="/categories/前端/Vue/">Vue</a>
-    </span>
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/Vue/">Vue</a><a href="/tags/Watcher/">Watcher</a>
-    </span>
-    
-
-    </div>
-
-    
-    <div class="article-meta pull-right">
-      <span>
-        <i class="icon-comments"></i>
-        <span>
-          <a href="/2017/03/17/vue-watcher/#comment">评论</a>
-        </span>
-      </span>
-    </div>
-    
-  </div>
-</article>
-
-
-
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2017/02/20/notes-about-you-dont-know-js-anonymous-function/"><span>《你不知道的JS上卷》阅读小记之匿名函数问题</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2017/02/20/notes-about-you-dont-know-js-anonymous-function/" rel="bookmark">
-        <time class="entry-date published" datetime="2017-02-20T19:48:52.000Z">
-          2017-02-20
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <h2 id="匿名函数的问题"><a href="#匿名函数的问题" class="headerlink" title="匿名函数的问题"></a>匿名函数的问题</h2><p>在第一部分<code>3.3.1匿名与具名</code>一节中，作者提到了匿名函数的三个缺点并给了一个最佳实践，三个缺点分别是调试时栈追踪看不到有意义的函数名带来麻烦，引用自身时只能使用过期的<code>arguments.callee</code>并举了两个例子回调和事件监听器触发后解绑自身，代码可读性；最佳实践是说始终传入具名函数，给函数表达式一个函数名。  </p>
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-      
-
-    <span class="post-categories">
-      <i class="icon-categories"></i>
-        <a href="/categories/JavaScript/">JavaScript</a>
-    </span>
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/JavaScript/">JavaScript</a>
-    </span>
-    
-
-    </div>
-
-    
-    <div class="article-meta pull-right">
-      <span>
-        <i class="icon-comments"></i>
-        <span>
-          <a href="/2017/02/20/notes-about-you-dont-know-js-anonymous-function/#comment">评论</a>
-        </span>
-      </span>
-    </div>
-    
-  </div>
-</article>
-
-
-
-  <article>
-
-  
-    
     <h3 class="article-title"><a href="/2017/02/19/notes-about-you-dont-know-js-settimeout-this/"><span>《你不知道的JS上卷》阅读小记之setTimeout的this指向问题</span></a></h3>
     
   
@@ -675,15 +539,15 @@
 
   
     
-    <h3 class="article-title"><a href="/2016/09/22/vuex2-problems-with-mapgetter/"><span>vuex2中使用mapGetters/mapActions报错解决方法</span></a></h3>
+    <h3 class="article-title"><a href="/2016/08/17/how-to-monitor-changes-of-js-variable/"><span>如何监听JS变量的变化</span></a></h3>
     
   
 
   <div class="article-top-meta">
     <span class="posted-on">
-      <a href="/2016/09/22/vuex2-problems-with-mapgetter/" rel="bookmark">
-        <time class="entry-date published" datetime="2016-09-22T00:00:00.000Z">
-          2016-09-22
+      <a href="/2016/08/17/how-to-monitor-changes-of-js-variable/" rel="bookmark">
+        <time class="entry-date published" datetime="2016-08-17T13:48:39.000Z">
+          2016-08-17
         </time>
       </a>
     </span>
@@ -695,8 +559,149 @@
   <div class="article-content">
     <div class="entry">
       
-        <p>在尝鲜vuex2时，发现vuex2增加了<code>mapGetters</code>和<code>mapActions</code>的方法，借助stage2的<code>Object Rest Operator</code>特性,可以写出下面代码：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">methods: &#123;</span><br><span class="line">  marked,</span><br><span class="line">  ...mapActions([</span><br><span class="line">    <span class="string">'getArticles'</span></span><br><span class="line">  ])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>但是在借助babel编译转换时发生了报错：<code>BabelLoaderError: SyntaxError: Unexpected token</code>。</p>
+        <blockquote>
+<p><a href="https://www.zhihu.com/question/44724640" target="_blank" rel="noopener">如何监听 js 中变量的变化?</a><br>我现在有这样一个需求，需要监控js的某个变量的改变，如果该变量发生变化，则触发一些事件，不能使用timeinterval之类的定时去监控的方法，不知道有比较好的解决方案么？</p>
+</blockquote>
+<p>这个问题问的很好。  </p>
+<p>流行的MVVM的JS库/框架都有共同的特点就是数据绑定，在数据变更后响应式的自动进行相关计算并变更DOM展现。所以这个问题也可以理解为<strong>如何实现MVVM库/框架的数据绑定</strong>。  </p>
+<p>常见的数据绑定的实现有脏值检测，基于ES5的<code>getter</code>和<code>setter</code>，以及ES已被废弃的<code>Object.observe</code>，和ES6中添加的<code>Proxy</code>。<br>
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+      
+
+    <span class="post-categories">
+      <i class="icon-categories"></i>
+        <a href="/categories/JavaScript/">JavaScript</a>
+    </span>
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/JavaScript/">JavaScript</a><a href="/tags/Proxy/">Proxy</a><a href="/tags/脏值检测/">脏值检测</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2016/08/17/how-to-monitor-changes-of-js-variable/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2016/08/02/javascript-event-emitter/"><span>JS实现自定义事件</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2016/08/02/javascript-event-emitter/" rel="bookmark">
+        <time class="entry-date published" datetime="2016-08-02T22:30:00.000Z">
+          2016-08-02
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="要求"><a href="#要求" class="headerlink" title="要求"></a>要求</h2><blockquote>
+<p>请实现下面的自定义事件Event对象的接口，功能见注释（测试1）<br>该Event对象的接口需要能被其他对象拓展复用（测试2）<br>
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+      
+
+    <span class="post-categories">
+      <i class="icon-categories"></i>
+        <a href="/categories/JavaScript/">JavaScript</a>
+    </span>
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/JavaScript/">JavaScript</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2016/08/02/javascript-event-emitter/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2016/05/16/table-with-striped-lines/"><span>制作列带有斑马条纹背景的表格</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2016/05/16/table-with-striped-lines/" rel="bookmark">
+        <time class="entry-date published" datetime="2016-05-16T13:27:00.000Z">
+          2016-05-16
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>在切页面时，遇到了一个有趣的表格，如图所示：<br>
       
     </div>
 
@@ -719,7 +724,7 @@
 
     <span class="post-tags">
       <i class="icon-tags"></i>
-        <a href="/tags/vuex2/">vuex2</a>
+        <a href="/tags/css/">css</a>
     </span>
     
 
@@ -730,7 +735,7 @@
       <span>
         <i class="icon-comments"></i>
         <span>
-          <a href="/2016/09/22/vuex2-problems-with-mapgetter/#comment">评论</a>
+          <a href="/2016/05/16/table-with-striped-lines/#comment">评论</a>
         </span>
       </span>
     </div>
@@ -755,7 +760,7 @@
     Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
     </br>
     
-    &copy; 2018 DaraW
+    &copy; 2019 DaraW
     
   </p>
 </footer>
