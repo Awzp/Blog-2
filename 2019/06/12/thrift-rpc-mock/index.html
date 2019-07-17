@@ -91,6 +91,7 @@
 <p>在微服务场景下，各服务之间通过 IDL 定义好 RPC 接口。但是接口调用方依然有 mock 接口的需求，接口提供方也有着自测接口的需求。公司内的服务化平台已经提供了较为完善的接口测试工具，自己实现一个相对也比较容易，但目前却没有一个比较完善的 RPC Mock 方案。</p>
 <p>在新项目启动后，前端、API 层和依赖的 Service 往往同步开始开发，只要依赖的 Service 未提供，API 和前端的开发、自测都会被阻塞，在侧重数据展示类需求的项目中这种问题更加严重。</p>
 <p>所以，有必要尝试探索一套 RPC Mock 的方案，在保证开发者使用体验的前提下，解决上述问题。</p>
+<a id="more"></a>
 <h2 id="方案调研"><a href="#方案调研" class="headerlink" title="方案调研"></a>方案调研</h2><p>虽然我们的目标和常见的 HTTP API Mock 不一样，但是在设计思路上，RPC Mock 与 HTTP API Mock 其实没有本质的区别，因此我们将传统的 HTTP API Mock 方案也纳入调研范围内。</p>
 <h3 id="Mock-js"><a href="#Mock-js" class="headerlink" title="Mock.js"></a><a href="http://mockjs.com" target="_blank" rel="noopener">Mock.js</a></h3><p>Mockjs 侧重 Mock 数据的生成，自定义了一套描述数据的 DSL，可以生成较为真实的 Mock 数据。<br>另外 Mockjs 还通过在开发本地劫持了 XHR 对象，提供了简单的 HTTP API Mock 的功能。</p>
 <h3 id="EasyMock"><a href="#EasyMock" class="headerlink" title="EasyMock"></a><a href="https://easy-mock.com/" target="_blank" rel="noopener">EasyMock</a></h3><p>Easy Mock 属于 HTTP API Mock。<br>在数据生成方面，需要用户自己编辑接口信息以及 Response 结构体，引入了 Mockjs，使用 Mockjs 的语法描述 Response 结构体以实现生成随机数据，平台服务端还提供了 HTTP 接口服务可供调用。</p>
@@ -136,7 +137,7 @@
 <p><strong>CLI 形式不够友好</strong>  </p>
 <ol>
 <li>如果需要同时配置 N 个 Service 的 Mock，那就需要打开 N 个 Terminal Tab 并使用 CLI 起 N 个 Mock Server。</li>
-<li>提交代码的时候得注意不能把类似下图的临时配置代码带上去：<br><img src="//sf1-ttcdn-tos.pstatp.com/obj/ttfe/14a4f961d1b1a3de28f72eebbd6e9a47.png" alt="临时配置代码"></li>
+<li>提交代码的时候得注意不能把写死的临时配置代码带上去。</li>
 </ol>
 <p><strong>语言无关</strong><br>当然，这个 CLI 也有一定的优点，也是 Thrift RPC 协议的优点：他是语言无关的。无论你在开发的业务使用的什么语言和框架，都可以使用。</p>
 <p>针对上面发现的一系列问题，首先决定暂时先放弃数据的自动化生成，只支持用户自行配置数据的方式；另外和 Mentor 沟通后，他提醒我一点，既然在 Node.js 项目中，RPC Middleware 是把 RPC Client 对象挂到了 <code>ctx</code> 上（这里是 Koa，在 Express 中是挂到了 <code>req</code> 上），那么完全可以通过中间件的形式再把 <code>ctx.rpc</code> 劫持了，在 Node.js 项目中做到更简单的实现、更精细的粒度控制和更好的使用体验。</p>
