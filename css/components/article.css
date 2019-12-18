@@ -72,6 +72,12 @@ article .featured-media {
   font-size: 1.6rem;
   color: #424242;
 }
+article .article-excerpt .excerpt-btn,
+article .article-content .excerpt-btn,
+article .featured-media .excerpt-btn {
+  margin: 4rem 0;
+  font-size: 1.4rem;
+}
 article .article-excerpt img,
 article .article-content img,
 article .featured-media img {
@@ -183,4 +189,26 @@ article table .table-striped tbody tr:nth-of-type(odd) {
 article table pre {
   overflow-x: auto;
   overflow-y: hidden;
+}
+@media (prefers-color-scheme: dark) {
+  article {
+    color: #f6f2f5;
+  }
+  article .article-title {
+    color: #f6f2f5;
+  }
+  article .article-title a {
+    color: #f6f2f5;
+  }
+  article .article-title a:hover {
+    color: #f6f2f5;
+  }
+  article .article-excerpt,
+  article .article-content,
+  article .featured-media {
+    color: #fff;
+  }
+  article code {
+    color: #f45542;
+  }
 }
