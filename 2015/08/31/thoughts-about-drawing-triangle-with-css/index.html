@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html>
-<head><meta name="generator" content="Hexo 3.9.0">
+<head>
   <meta charset="utf-8">
   
   <title>CSS画三角形引发的一些思考 | DaraW | Code is Poetry</title>
@@ -22,18 +22,18 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-  <meta property="og:title" content="CSS画三角形引发的一些思考">
+  <meta property="og:title" content="CSS画三角形引发的一些思考"/>
 
-  <meta property="og:site_name" content="DaraW">
+  <meta property="og:site_name" content="DaraW"/>
 
   
-  <meta property="og:image" content="/favicon.ico">
+  <meta property="og:image" content="/favicon.ico"/>
   
 
   <link href="/favicon.ico" rel="icon">
   <link rel="alternate" href="/atom.xml" title="DaraW" type="application/atom+xml">
   <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-</head>
+<meta name="generator" content="Hexo 4.1.1"></head>
 
 
 <body>
@@ -91,7 +91,6 @@
 <a id="more"></a>
 <p>&emsp;&emsp;第一次遇到这个问题是在撸Bootstrap的一个demo ——<a href="http://v3.bootcss.com/examples/blog/" target="_blank" rel="noopener">Blog Template for Bootstrap</a>，它的导航栏中用到了CSS来画三角形：<br><img src="/img/20150831231156.png" alt="截图1"><br>我们来看一看其中重点的那段CSS代码：  </p>
 <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.blog-nav</span> <span class="selector-class">.active</span><span class="selector-pseudo">:after</span> &#123;  </span><br><span class="line">      <span class="attribute">position</span>: absolute;  </span><br><span class="line">      <span class="attribute">bottom</span>: <span class="number">0</span>;  </span><br><span class="line">      <span class="attribute">left</span>: <span class="number">50%</span>;  </span><br><span class="line">      <span class="attribute">width</span>: <span class="number">0</span>;  </span><br><span class="line">      <span class="attribute">height</span>: <span class="number">0</span>;  </span><br><span class="line">      <span class="attribute">margin-left</span>: -<span class="number">5px</span>;  </span><br><span class="line">      <span class="attribute">vertical-align</span>: middle;  </span><br><span class="line">      <span class="attribute">content</span>: <span class="string">" "</span>;  </span><br><span class="line">      <span class="attribute">border-right</span>: <span class="number">5px</span> solid transparent;  </span><br><span class="line">      <span class="attribute">border-bottom</span>: <span class="number">5px</span> solid;  </span><br><span class="line">      <span class="attribute">border-left</span>: <span class="number">5px</span> solid transparent;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>&emsp;&emsp;这只是一段简单的用CSS画出等腰直角三角形的实现案例，当时我在SF的一篇文章找到了答案：<a href="http://segmentfault.com/a/1190000000652249" target="_blank" rel="noopener">图解利用CSS实现三角形 - SegmentFault</a>，通过这篇文章，我明白了原来border是一个梯形，当梯形的上底为0的极限情况时，梯形就成了一个三角形，画一个正方形，正方形的div为0时，隐藏三条border，剩下的可见的border便是所需的三角形。于是bootstrap的demo中的问题迎刃而解。<br>&emsp;&emsp;然而，bootstrap的demo中的等边直角三角形是一个非常经典的情况，那么画任意三角形的时候怎么办呢？知乎的<a href="http://www.zhihu.com/people/vkki" target="_blank" rel="noopener">@Vkki</a>用户给出了结论：  </p>
 <blockquote>
 <p>（上边的 width 控制了这个三角形上顶点离 div 边缘的距离是 10px）<br>下边的 width 控制了三角形的高（150px）<br>左右两边的 width 分别控制了三角形的底边长的两部分（加起来共 200px）<br><img src="/img/Vkki.png" alt="Vkki"><br><img src="/img/Vkki2.png" alt="Vkki">  </p>

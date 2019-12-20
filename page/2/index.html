@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html>
-<head><meta name="generator" content="Hexo 3.9.0">
+<head>
   <meta charset="utf-8">
   
   <title>第 2 页 | DaraW | Code is Poetry</title>
@@ -21,16 +21,16 @@
 
   
 
-  <meta property="og:site_name" content="DaraW">
+  <meta property="og:site_name" content="DaraW"/>
 
   
-  <meta property="og:image" content="/favicon.ico">
+  <meta property="og:image" content="/favicon.ico"/>
   
 
   <link href="/favicon.ico" rel="icon">
   <link rel="alternate" href="/atom.xml" title="DaraW" type="application/atom+xml">
   <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-</head>
+<meta name="generator" content="Hexo 4.1.1"></head>
 
 
 <body>
@@ -329,7 +329,6 @@
       
         <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>先来看一段代码：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'3000ms'</span>);</span><br><span class="line">&#125;, <span class="number">3000</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'first'</span>);</span><br><span class="line"></span><br><span class="line">setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'1000ms'</span>);</span><br><span class="line">&#125;, <span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'second'</span>);</span><br></pre></td></tr></table></figure>
-
 <p>控制台输出为：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">first</span><br><span class="line">second</span><br><span class="line">1000ms</span><br><span class="line">3000ms</span><br></pre></td></tr></table></figure>
 

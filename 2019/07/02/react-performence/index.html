@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html>
-<head><meta name="generator" content="Hexo 3.9.0">
+<head>
   <meta charset="utf-8">
   
   <title>React 应用性能优化一例 | DaraW | Code is Poetry</title>
@@ -22,18 +22,18 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-  <meta property="og:title" content="React 应用性能优化一例">
+  <meta property="og:title" content="React 应用性能优化一例"/>
 
-  <meta property="og:site_name" content="DaraW">
+  <meta property="og:site_name" content="DaraW"/>
 
   
-  <meta property="og:image" content="/favicon.ico">
+  <meta property="og:image" content="/favicon.ico"/>
   
 
   <link href="/favicon.ico" rel="icon">
   <link rel="alternate" href="/atom.xml" title="DaraW" type="application/atom+xml">
   <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-</head>
+<meta name="generator" content="Hexo 4.1.1"></head>
 
 
 <body>
@@ -89,7 +89,6 @@
       
         <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>在我们的应用中有一个存储在 Redux 中的全局状态机，保存着整个应用的核心状态，其类型大概如下：</p>
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> FSMStatus &#123;</span><br><span class="line">    Unknown = <span class="number">0</span>,</span><br><span class="line">    Active = <span class="number">1</span>,</span><br><span class="line">    Inactive = <span class="number">2</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> FSM &#123;</span><br><span class="line">    global_id: <span class="built_in">number</span>; <span class="comment">// 状态机实例的全局唯一 ID</span></span><br><span class="line">    timestamp: <span class="built_in">number</span>; <span class="comment">// 当前时间，每隔一秒会变化</span></span><br><span class="line">    fsm_status: FSMStatus; <span class="comment">// 整个状态机的状态</span></span><br><span class="line">    x_mod_status: FSMStatus; <span class="comment">// x 模块的状态</span></span><br><span class="line">    x_mod_data: <span class="built_in">any</span>; <span class="comment">// x 模块的核心数据</span></span><br><span class="line">    y_mod_status: FSMStatus; <span class="comment">// y 模块的状态</span></span><br><span class="line">    y_mod_data: <span class="built_in">any</span>; <span class="comment">// y 模块的核心数据</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>还有一些 React 组件，其中 <code>Main</code> 组件包含了 <code>Inner</code> 组件，<code>Inner</code> 组件中使用了 <code>rc-tooltip</code> 实现了弹窗效果。弹窗中有一个列表，列表中有一条带有特殊样式的处于激活状态的数据，且可以通过按键操作切换处于激活状态的数据项。  </p>
 <p>某天突然用户报告说操作弹窗列表时感到卡顿，而且在弹窗开着的时候其他模块会明显感觉比较卡。</p>
 <a id="more"></a>

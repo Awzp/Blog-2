@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html>
-<head><meta name="generator" content="Hexo 3.9.0">
+<head>
   <meta charset="utf-8">
   
   <title>前端函数式编程 | DaraW | Code is Poetry</title>
@@ -22,18 +22,18 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-  <meta property="og:title" content="前端函数式编程">
+  <meta property="og:title" content="前端函数式编程"/>
 
-  <meta property="og:site_name" content="DaraW">
+  <meta property="og:site_name" content="DaraW"/>
 
   
-  <meta property="og:image" content="/favicon.ico">
+  <meta property="og:image" content="/favicon.ico"/>
   
 
   <link href="/favicon.ico" rel="icon">
   <link rel="alternate" href="/atom.xml" title="DaraW" type="application/atom+xml">
   <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-</head>
+<meta name="generator" content="Hexo 4.1.1"></head>
 
 
 <body>
@@ -95,7 +95,6 @@
 </blockquote>
 <p>如果学过离散数学的同学可能就会想起来了，这便是著名的<strong>图灵机停机问题</strong>。这个需求看似描述很完备，有输入输出的要求，也有函数功能的要求，但这个需求是不可实现的。<br>证明很简单：假设存在满足上述要求的函数<code>f</code>，那么我们定义一个邪恶的函数<code>evil</code>，其伪代码定义如下：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">evil</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (f(evil) == <span class="literal">true</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">while</span>(<span class="literal">true</span>) &#123;&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>于是这里便产生了悖论：如果<code>f</code>判定<code>evil</code>不会死循环，<code>evil</code>就会死循环；反之则不会死循环。所以假设不成立，即不存在符合要求的<code>f</code>。  </p>
 <p>类似的悖论还有著名的理发师悖论：理发师给所有不给自己理发的人理发。<br>不可解的<code>停机问题</code>其实便是<strong>哥德尔不完备定理</strong>的一种形式。</p>
 <h3 id="Lambda-λ-演算"><a href="#Lambda-λ-演算" class="headerlink" title="Lambda (λ) 演算"></a>Lambda (λ) 演算</h3><blockquote>
@@ -129,10 +128,8 @@
 
 <p>但是语言直接提供的这点惰性实在是太可怜了，JS中也基本都是立即求值。<br>这里拿Haskell举个例子：</p>
 <figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Prelude</span>&gt; <span class="keyword">import</span> Data.List</span><br><span class="line"><span class="type">Prelude</span> <span class="type">Data</span>.<span class="type">List</span>&gt; take <span class="number">10</span> $ sort [<span class="number">100</span>, <span class="number">99.</span><span class="number">.0</span>] :: [<span class="type">Int</span>]</span><br><span class="line"><span class="comment">-- [0,1,2,3,4,5,6,7,8,9]</span></span><br></pre></td></tr></table></figure>
-
 <p>简单介绍下，<code>[Int]</code>是类型标注，表示返回的是一个整型列表；<code>[100, 99..0]</code>代表生成一个等差的列表；<code>sort</code>是排序；<code>$</code>是一个中缀函数，可以理解为把右边部分括起来。<br>这段代码的意思是生成一个100到0的等差数列，把这个等差列表从小到大排序并取出前十个。如果在JavaScript中的等价的代码应该类似如下：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = []</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">100</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">  arr.push(i)</span><br><span class="line">&#125;</span><br><span class="line">arr.sort(<span class="function">(<span class="params">a, b</span>) =&gt;</span> a - b)</span><br><span class="line"><span class="built_in">console</span>.log(arr.splice(<span class="number">0</span>, <span class="number">10</span>))</span><br><span class="line"><span class="comment">// [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]</span></span><br></pre></td></tr></table></figure>
-
 <p>无论是什么JS引擎，这段JS代码在执行的时候都会把这个数组的所有元素都遍历一遍；相反的是上面的Haskell代码在执行的时候，Haskell的编译器GHC只会尝试去计算刚好足够取出需要的10个元素为止。所以，在Haskell中，我们完全可以定义出无限长度的数组，然后设法取出其中的一部分，GHC也会在底层通过一些黑魔法来帮助实现。  </p>
 <p>让我们回到JS：在ES6之前，模拟惰性求值的方式一般是thunk函数，或者借助Stream抽象。所幸ES6使得JS拥有了强大的<code>generator</code>函数，我们现在还可以借助它模拟惰性求值。  </p>
 <p>具体的实现可以阅读参考文献中的文章，也有现成的库例如Lazy.js可以使用，这里不再赘述。  </p>
@@ -142,13 +139,10 @@
 <h3 id="不适合函数式编程"><a href="#不适合函数式编程" class="headerlink" title="不适合函数式编程"></a>不适合函数式编程</h3><ul>
 <li><p>递归<br>在JS中，递归容易导致一个致命的问题：<strong>爆栈</strong>。<br>尾递归优化可以使得尾递归在编译时被优化为循环从而避免爆栈，但是到目前为止，JS是没有什么正儿八经的尾递归优化的，当然我们有着<code>Trampolining</code>这样的奇技淫巧可以巧妙的避免爆栈，但是每一层的转换消耗的匿名函数开销也是不可小觑：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">trampoline</span>(<span class="params">f</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> result = f.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">    <span class="keyword">while</span> (result <span class="keyword">instanceof</span> <span class="built_in">Function</span>) &#123;</span><br><span class="line">      result = result();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> reduce = trampoline(<span class="function"><span class="keyword">function</span> <span class="title">myself</span>(<span class="params">f, list, sum</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (list.length &lt; <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> sum;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="keyword">var</span> val = list.shift();</span><br><span class="line">      <span class="keyword">return</span> myself(f, list, f(val, list));</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
 <p>上面这段代码来自贺老在今年的FP China会议上的分享STC VS PTC。<br>ES6早已规定了JS应该有尾递归的优化，但是大家迟迟不去实现，主要是尾递归优化的STC与PTC之争：<br>PTC:</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sum</span>(<span class="params">n, total = <span class="number">0</span></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (n === <span class="number">0</span>) <span class="keyword">return</span> total</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">return</span> sum(n - <span class="number">1</span>, total + n)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>PTC目前只有Safari支持，V8可以通过flag开启。STC的问题在于不知道写对了没有，开发时不爆栈不代表生产环境不爆栈，以及很难以调试。<br>STC:</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">factorial</span>(<span class="params">n, acc = <span class="number">1</span></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (n === <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> acc;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">continue</span> factorial(n - <span class="number">1</span>, acc * n)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>STC通过新的语法，保证不写对就会报错，但是新的语法会引入维护等一些问题。<br>所以因为STC与PTC之争，至今JS仍没有一个可靠的尾递归优化。</p>
 </li>
 <li><p>纯函数难以保证<br>在Haskell、Clojure等语言中，会有语言或者是编译的层面去做纯度的保障，但是在JS中，这一切只能靠我们自己来做约束，在多人合作的时候很难保证不会有坑。</p>

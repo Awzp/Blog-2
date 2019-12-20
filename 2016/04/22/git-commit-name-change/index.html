@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html>
-<head><meta name="generator" content="Hexo 3.9.0">
+<head>
   <meta charset="utf-8">
   
   <title>git用户名莫名其妙变化及挽救措施 | DaraW | Code is Poetry</title>
@@ -22,18 +22,18 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-  <meta property="og:title" content="git用户名莫名其妙变化及挽救措施">
+  <meta property="og:title" content="git用户名莫名其妙变化及挽救措施"/>
 
-  <meta property="og:site_name" content="DaraW">
+  <meta property="og:site_name" content="DaraW"/>
 
   
-  <meta property="og:image" content="/favicon.ico">
+  <meta property="og:image" content="/favicon.ico"/>
   
 
   <link href="/favicon.ico" rel="icon">
   <link rel="alternate" href="/atom.xml" title="DaraW" type="application/atom+xml">
   <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-</head>
+<meta name="generator" content="Hexo 4.1.1"></head>
 
 
 <body>
@@ -98,7 +98,6 @@
 <p>在本地仓库目录下<code>git log</code>查看了历史记录，发现出问题的那几次的用户名变成了windows的用户名，邮箱也是用户名。<br>按照帮助文档修复了commit作者信息，并提交了github的远程仓库后，终于正常了。  </p>
 <p>最后，在git bash中设定好git配置文件的用户信息：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name "CodeDaraW"</span><br><span class="line">git config --global user.email "CodeDaraW@gmail.com"</span><br></pre></td></tr></table></figure>
-
 <p>一切就正常了。</p>
 
       

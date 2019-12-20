@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html>
-<head><meta name="generator" content="Hexo 3.9.0">
+<head>
   <meta charset="utf-8">
   
   <title>node-thunkify源码阅读笔记 | DaraW | Code is Poetry</title>
@@ -22,18 +22,18 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-  <meta property="og:title" content="node-thunkify源码阅读笔记">
+  <meta property="og:title" content="node-thunkify源码阅读笔记"/>
 
-  <meta property="og:site_name" content="DaraW">
+  <meta property="og:site_name" content="DaraW"/>
 
   
-  <meta property="og:image" content="/favicon.ico">
+  <meta property="og:image" content="/favicon.ico"/>
   
 
   <link href="/favicon.ico" rel="icon">
   <link rel="alternate" href="/atom.xml" title="DaraW" type="application/atom+xml">
   <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-</head>
+<meta name="generator" content="Hexo 4.1.1"></head>
 
 
 <body>
@@ -97,11 +97,9 @@
 
 <p>Demo：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params">a, b, callback</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> sum = a + b;</span><br><span class="line">  callback(sum);</span><br><span class="line">  callback(sum);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> ft = thunkify(f);</span><br><span class="line">ft(<span class="number">1</span>, <span class="number">2</span>)(<span class="built_in">console</span>.log);</span><br><span class="line"><span class="comment">// 3</span></span><br></pre></td></tr></table></figure>
-
 <p>让我一时没有搞懂的是为什么借助<code>called</code>标记能够确保回调函数只执行一次，借助VS Code的断点调试把文中示例的代码跑了一遍总算搞懂了：  </p>
 <p>Demo中首先真正执行的是<code>thunkify(f)</code>，<code>f</code>函数传入<code>thunkify</code>后直接返回了一个闭包，这里称之为闭包1，闭包1被赋值给了ft，ft即为闭包1的一个引用。<br>接着执行的是<code>ft(1, 2)</code>，<code>ft</code>中传入了<code>(1, 2)</code>来执行，<code>ft</code>中将<code>duck type</code>的伪数组<code>arguments</code>保存为一个真实数组<code>args</code>，所以此时<code>args</code>数组中有两个成员即<code>1</code>和<code>2</code>，<code>ft</code>最后又返回了一个闭包，这里称之为闭包2。<br>接着执行的是<code>ft(1, 2)(console.log)</code>，也就是将<code>console.log</code>传入闭包2来执行，传入的<code>console.log</code>即形参<code>done</code>其实就是一开始<code>f</code>的回调函数，这时候重点来了，在闭包2中增加了一个标记<code>called</code>来记录回调是否执行过一次了，而<code>push</code>进<code>args</code>数组的函数则已经不是单纯的回调，而是被包裹了原回调、保证只会执行一次的函数</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (called) <span class="keyword">return</span>;</span><br><span class="line">  called = <span class="literal">true</span>;</span><br><span class="line">  done.apply(<span class="literal">null</span>, <span class="built_in">arguments</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>最后执行的就是<code>fn.apply(ctx, args)</code>，而<code>thunkify</code>函数的形参<code>fn</code>对应的就是一开始传入的<code>f</code>函数，所以总的看来，真正执行的还是最初的<code>f</code>函数，而被改变的是传入的回调，回调被包裹了一层，借助<code>called</code>标记来保证只会被执行一次，执行过后<code>called</code>标记被改变，不再会被执行。</p>
 
       
