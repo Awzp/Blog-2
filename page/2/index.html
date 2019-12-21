@@ -65,6 +65,71 @@
 
   
     
+    <h3 class="article-title"><a href="/2016/08/17/how-to-monitor-changes-of-js-variable/"><span>如何监听JS变量的变化</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2016/08/17/how-to-monitor-changes-of-js-variable/" rel="bookmark">
+        <time class="entry-date published" datetime="2016-08-17T13:48:39.000Z">
+          2016-08-17
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <blockquote>
+<p><a href="https://www.zhihu.com/question/44724640" target="_blank" rel="noopener">如何监听 js 中变量的变化?</a><br>我现在有这样一个需求，需要监控js的某个变量的改变，如果该变量发生变化，则触发一些事件，不能使用timeinterval之类的定时去监控的方法，不知道有比较好的解决方案么？</p>
+</blockquote>
+<p>这个问题问的很好。  </p>
+<p>流行的MVVM的JS库/框架都有共同的特点就是数据绑定，在数据变更后响应式的自动进行相关计算并变更DOM展现。所以这个问题也可以理解为<strong>如何实现MVVM库/框架的数据绑定</strong>。  </p>
+<p>常见的数据绑定的实现有脏值检测，基于ES5的<code>getter</code>和<code>setter</code>，以及ES已被废弃的<code>Object.observe</code>，和ES6中添加的<code>Proxy</code>。</p>
+        
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+      
+
+    <span class="post-categories">
+      <i class="icon-categories"></i>
+        <a href="/categories/JavaScript/">JavaScript</a>
+    </span>
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/JavaScript/">JavaScript</a><a href="/tags/Proxy/">Proxy</a><a href="/tags/脏值检测/">脏值检测</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
     <h3 class="article-title"><a href="/2016/08/02/javascript-event-emitter/"><span>JS实现自定义事件</span></a></h3>
     
   
