@@ -87,7 +87,7 @@
   <div class="article-content">
     <div class="entry">
       
-        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>业务中使用到视频播放后，一些不确定的因素例如用户端网络异常、CDN 异常等等，导致视频加载缓慢和发生卡顿，这些质量问题会给用户体验带来较大的伤害，也会影响产品的留存转化率。因此对线上视频进行质量监控意义很大，可以让我们明确知道用户端的异常发生概率，以便做进一步的优化。</p>
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>业务中使用到视频播放后，一些不确定的因素例如用户端网络异常、CDN 异常等等，导致视频加载缓慢和发生卡顿，这些质量问题会给用户体验带来较大的伤害，也会影响产品的留存转化率。因此对线上视频进行质量监控意义很大，可以让我们明确知道用户端的异常发生概率，以便做进一步的优化。</p>
 <a id="more"></a>
 <p>在我们的业务中，是不支持用户自己控制视频播放/暂停以及播放进度的，所以我们不需要考虑一些用户控制的边界情况；另外一部分视频会在挂载到真实 DOM 前做预加载（preload）处理，因此我们要留意下这类视频和无预加载的视频的差异。<br>另外我们的业务只在 PC 上，而且用户使用的都是现代浏览器（Chrome 为主），所以不需要考虑移动端的兼容性以及老浏览器的兼容性。</p>
 <h2 id="思路与实现"><a href="#思路与实现" class="headerlink" title="思路与实现"></a>思路与实现</h2><p><code>video</code> Element 在播放视频的过程中会触发一系列的媒体事件（Media events），通过查阅 MDN Media events 列表，可以发现值得关注的几个事件分别是 <code>canplay</code> <code>canplaythrough</code> <code>error</code> <code>loadeddata</code> <code>loadedmetadata</code> <code>loadstart</code> <code>play</code> <code>playing</code> <code>waiting</code>。  </p>
